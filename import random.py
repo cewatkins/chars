@@ -32,6 +32,20 @@ def roll_stat():
     rolls.remove(min(rolls))
     return sum(rolls)
 
+def get_stat_input(stat_name):
+    while True:
+        input_value = input(f"Enter value for {stat_name} (1-18, leave blank to randomize): ")
+        if input_value == "":
+            return random.randint(1, 18)
+        try:
+            value = int(input_value)
+            if 1 <= value <= 18:
+                return value
+            else:
+                print("Value must be between 1 and 18.")
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 and 18.")
+
 def randomize_character():
     names = ["Aragorn", "Legolas", "Gimli", "Frodo", "Gandalf"]
     races = ["Human", "Elf", "Dwarf", "Hobbit", "Wizard"]
@@ -49,15 +63,31 @@ def randomize_character():
     name = random.choice(names)
     race = random.choice(races)
     char_class = random.choice(classes)
-    strength = roll_stat()
-    dexterity = roll_stat()
-    constitution = roll_stat()
-    intelligence = roll_stat()
-    wisdom = roll_stat()
-    charisma = roll_stat()
+    
+    if num_characters == 0:
+        strength = get_stat_input("strength")
+        dexterity = get_stat_input("dexterity")
+        constitution = get_stat_input("constitution")
+        intelligence = get_stat_input("intelligence")
+        wisdom = get_stat_input("wisdom")
+        charisma = get_stat_input("charisma")
+    else:
+        strength = roll_stat()
+        dexterity = roll_stat()
+        constitution = roll_stat()
+        intelligence = roll_stat()
+        wisdom = roll_stat()
+        charisma = roll_stat()
 
     return Character(name, race, char_class, strength, dexterity, constitution, intelligence, wisdom, charisma)
 
 if __name__ == "__main__":
-    character = randomize_character()
-    print(character)
+    num_characters = int(input("Enter the number of characters to create (0 for manual input): "))
+    if num_characters > 0:
+        characters = [randomize_character() for _ in range(num_characters)]
+    else:
+        characters = [randomize_character()]
+    
+    for character in characters:
+        print(character)
+        print("-" * 20)
